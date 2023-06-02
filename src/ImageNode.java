@@ -7,19 +7,20 @@ public class ImageNode extends Node{
     private int bit_depth;
     private String suffix;
 
-    public ImageNode(String nodeType, String path){
+    public ImageNode(String nodeType, String path, long size){
         this.node_type = NodeType.valueOf(nodeType);
         this.path = path;
+        this.size = size;
 
         switch (this.node_type) {
             case GIF:
-                set_GIF_Data(new File(this.path));
+                setGIFData(new File(this.path));
                 break;
             case PNG:
-                set_PNG_Data(new File(this.path));
+                setPNGData(new File(this.path));
                 break;
             case JPG:
-                set_JPEG_Data(new File(this.path));
+                setJPEGData(new File(this.path));
                 break;
             default:
                 break;
@@ -52,7 +53,7 @@ public class ImageNode extends Node{
      * <p>References: https://en.wikipedia.org/wiki/PNG</p>
      * @param imgFile Java File Object that represents the currently examined file
      */
-    private void set_PNG_Data(File imgFile){
+    private void setPNGData(File imgFile){
         try (FileInputStream fis = new FileInputStream(imgFile)) {
 
             BufferedInputStream bis = new BufferedInputStream(fis);
@@ -107,7 +108,7 @@ public class ImageNode extends Node{
      * <p>References: https://en.wikipedia.org/wiki/GIF</p>
      * @param imgFile Java File Object that represents the currently examined file
      */
-    private void set_GIF_Data(File imgFile){
+    private void setGIFData(File imgFile){
         try (FileInputStream fis = new FileInputStream(imgFile)) {
             BufferedInputStream bis = new BufferedInputStream(fis);
             DataInputStream dis = new DataInputStream(bis);
@@ -139,6 +140,7 @@ public class ImageNode extends Node{
             this.bit_depth = 1;
             this.height = height;
             this.width = width;
+            this.setImageCompression();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -151,7 +153,7 @@ public class ImageNode extends Node{
      * https://wiki.tcl-lang.org/page/Reading+JPEG+image+dimensions</p>
      * @param imgFile Java File Object that represents the currently examined file
      */
-    private void set_JPEG_Data(File imgFile){
+    private void setJPEGData(File imgFile){
         try (FileInputStream fis = new FileInputStream(imgFile)) {
             BufferedInputStream bis = new BufferedInputStream(fis);
             DataInputStream dis = new DataInputStream(bis);
@@ -186,6 +188,7 @@ public class ImageNode extends Node{
                     this.bit_depth = 3;
                     this.height = height;
                     this.width = width;
+                    this.setImageCompression();
 
                     if (dis != null) dis.close ();
                     if (bis != null) bis.close ();
@@ -210,7 +213,6 @@ public class ImageNode extends Node{
 
     /**
      * Setter calculating image compression based on Image dimensions and the bit depth
-     * @param child_node The current node of the file data tree object
      */
     private void setImageCompression() {
         this.compression = (int)((this.size * 100) / (this.height * this.width * this.bit_depth));

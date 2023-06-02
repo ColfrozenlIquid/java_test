@@ -42,7 +42,7 @@ public class DirectoryAnalyser {
      */
     public void analyse(){
         Scanner sc = new Scanner(System.in);
-        System.out.print("Enter relative path: ");
+        System.out.print("Enter absolute or relative path: ");
         String path = sc.nextLine();
         System.out.println("You entered: " + path);
         File pathFile = new File(path);
@@ -76,7 +76,7 @@ public class DirectoryAnalyser {
                     folder_compression += child_node.compression;
                 }
                 else {
-                    String suffix = Node.get_File_Suffix(f).toUpperCase();
+                    String suffix = Node.getFileSuffix(f).toUpperCase();
                     if (!getEnumValues().contains(suffix.toUpperCase())){
                         FileNode child_node = new FileNode(f.getAbsolutePath());
                         child_node.size = f.length();
@@ -90,8 +90,7 @@ public class DirectoryAnalyser {
                     NodeType currType = NodeType.valueOf(suffix);
                     if (Arrays.asList(NodeType.values()).contains(currType)){
                         if (NodeType.getImageTypes().contains(suffix)){
-                            ImageNode child_node = new ImageNode(suffix, f.getAbsolutePath());
-                            child_node.size = f.length();
+                            ImageNode child_node = new ImageNode(suffix, f.getAbsolutePath(), f.length());
                             child_node.setSuffix(suffix);
                             curr_Node.addChild(child_node);
                             folder_size += child_node.size;
@@ -110,7 +109,7 @@ public class DirectoryAnalyser {
             }
         }
         curr_Node.size = folder_size;
-        curr_Node.compression = folder_compression;
+        curr_Node.compression = folder_compression/curr_Node.children.size();
     }
     /**
      * Creates a Hashset that links String name key and Enum NodeType values

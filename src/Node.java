@@ -1,13 +1,12 @@
 import java.io.File;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public abstract class Node implements INode{
     String path;
     NodeType node_type;
     long size;
-    int compression = 0;
+    int compression;
     Node parent;
     List<Node> children = new ArrayList<Node>();
 
@@ -25,7 +24,7 @@ public abstract class Node implements INode{
      * @param file Java File Object that represents the currently examined file
      * @return String The files suffix as a String
      */
-    public static String get_File_Suffix(File file) {
+    public static String getFileSuffix(File file) {
         int pos = file.getName().lastIndexOf(".");       //Get the last name of the path, then get the index of the last occurence of ".", this is to find the file extension type
         if (pos == -1)
             return "Unknown file extension";
